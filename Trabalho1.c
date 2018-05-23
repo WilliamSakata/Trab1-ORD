@@ -47,12 +47,12 @@ int readfield(FILE *arq, FILE *reg, char str[]){  //le o arquivo dados inline e 
   char ch;
 
   i=0;
-  ch = fgets(arq);
+  ch = fgetc(arq);
 
   while (ch != pipe && ch != EOF){
     str[i]=ch;
     i++;
-    ch=fgets(arq);
+    ch=fgetc(arq);
   }
 
   str[i] = '\0';
@@ -66,7 +66,7 @@ void escreve_campo(char *str, FILE *reg){
 }
 
 void importacao(FILE *arq, FILE *reg){
-  char num-insc[10], nome[50];
+  char num_insc[10], nome[50];
   int tam_campo;
 
     if(arq == NULL){
@@ -83,12 +83,14 @@ void importacao(FILE *arq, FILE *reg){
 
     fwrite('-1', sizeof(int), 1, reg); //escreve a LED no inicio do arquivo
 
-    tam_campo = readfield(arq, reg, str);
+    tam_campo = 1;
 
-    while (tam_campo > 0) {   //transcreve o arquivo dados inline para o arquivo de registro 
-      fwrite(&tam_campo, sizeof(int), 1, reg);
-      escreve_campo(str, reg);
-      tam_campo = readfield(arq, reg, str);
+    while (tam_campo > 0) {   //transcreve o arquivo dados inline para o arquivo de registro
+        tam_campo = readfield(arq, reg, num_insc);
+        fwrite(&tam_campo, sizeof(int), 1, reg);
+        escreve_campo(num_insc, reg);
+        tam_campo = readfield(arq, reg, nome);
+
     }
 
 }
